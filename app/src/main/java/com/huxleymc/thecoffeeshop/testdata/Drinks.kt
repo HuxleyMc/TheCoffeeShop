@@ -32,6 +32,15 @@ val Drinks = listOf(
         name = "Macchiato",
         description = "A type of espresso coffee drink with a small amount of steamed milk or milk foam, giving it a strong coffee flavor",
         price = 3.88
+    ),
+    Drink(
+        name = "Mocha",
+        description = "A chocolate-flavored variant of a latte, made with espresso, steamed milk, and chocolate syrup, often topped with whipped cream.",
+        price = 4.00
+    ),
+    Drink(
+        name = "Americano",
+        description = "A diluted espresso, created by adding hot water to a shot of espresso, giving it a similar strength but different flavor from traditional drip coffee.",
+        price = 2.50
     )
-
 )
