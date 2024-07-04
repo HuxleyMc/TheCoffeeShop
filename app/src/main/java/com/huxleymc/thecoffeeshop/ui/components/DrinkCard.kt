@@ -1,6 +1,8 @@
 package com.huxleymc.thecoffeeshop.ui.components
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -31,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,7 +47,14 @@ import com.huxleymc.thecoffeeshop.testdata.Drinks
 import com.huxleymc.thecoffeeshop.ui.theme.Typography
 
 @Composable
-fun DrinkCard(modifier: Modifier = Modifier, onClick: () -> Unit = {}, drink: Drink) {
+fun DrinkCard(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    drink: Drink,
+    delay: Int = 1,
+    loaded: Boolean = true
+) {
+
 
     var expanded by remember {
         mutableStateOf(false)
@@ -55,6 +65,12 @@ fun DrinkCard(modifier: Modifier = Modifier, onClick: () -> Unit = {}, drink: Dr
     }
 
     val interactionSource = remember { MutableInteractionSource() }
+
+    val loadedScale by animateFloatAsState(
+        if (loaded) 1f else 0.5f,
+        label = "",
+        animationSpec = tween(500 * delay)
+    )
 
     Card(
         modifier = modifier
@@ -70,7 +86,9 @@ fun DrinkCard(modifier: Modifier = Modifier, onClick: () -> Unit = {}, drink: Dr
                     Image(
                         painter = painterResource(id = drink.image),
                         contentDescription = null,
-                        modifier = Modifier.height(120.dp)
+                        modifier = Modifier
+                            .height(120.dp)
+                            .scale(loadedScale)
                     )
                     Column(
                         horizontalAlignment = Alignment.End, modifier = Modifier.fillMaxWidth()
@@ -133,14 +151,19 @@ fun DrinkCard(modifier: Modifier = Modifier, onClick: () -> Unit = {}, drink: Dr
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(space = 5.dp)
                     ) {
-                        Button(onClick = { amount -= 1 }, enabled = amount > 1) {
+                        Button(
+                            onClick = { amount -= 1 },
+                            enabled = amount > 1,
+                            modifier = Modifier.scale(loadedScale)
+                        ) {
                             Text(text = "-", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                         }
 
                         Button(
                             onClick = { amount = 1 },
                             colors = ButtonDefaults.buttonColors()
-                                .copy(containerColor = Color.Green.copy(alpha = 0.4f))
+                                .copy(containerColor = Color.Green.copy(alpha = 0.4f)),
+                            modifier = Modifier.scale(loadedScale)
                         ) {
                             Text(
                                 text = "Add $amount",
@@ -153,6 +176,7 @@ fun DrinkCard(modifier: Modifier = Modifier, onClick: () -> Unit = {}, drink: Dr
                         Button(
                             onClick = { amount += 1 },
                             enabled = amount < 10,
+                            modifier = Modifier.scale(loadedScale)
                         ) {
                             Text(text = "+", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                         }

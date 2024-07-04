@@ -9,9 +9,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +40,15 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppContainer(modifier: Modifier = Modifier) {
+
+    var loaded by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = null) {
+        loaded = true
+    }
+
     Scaffold(modifier = modifier.fillMaxSize(), bottomBar = {
         CoffeeShopBottomAppBar()
     }, topBar = {
@@ -47,8 +61,8 @@ fun AppContainer(modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(horizontal = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(Drinks) {
-                    DrinkCard(drink = it)
+                itemsIndexed(Drinks) { index, drink ->
+                    DrinkCard(drink = drink, delay = index, loaded = loaded)
                 }
             }
         }
