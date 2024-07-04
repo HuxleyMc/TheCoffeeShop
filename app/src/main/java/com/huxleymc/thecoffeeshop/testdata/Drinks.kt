@@ -3,7 +3,6 @@ package com.huxleymc.thecoffeeshop.testdata
 import com.huxleymc.thecoffeeshop.data.Drink
 
 
-
 //Name,Description
 //Espresso,
 //Americano,A diluted espresso, created by adding hot water to a shot of espresso, giving it a similar strength but different flavor from traditional drip coffee.
@@ -42,5 +41,10 @@ val Drinks = listOf(
         name = "Americano",
         description = "A diluted espresso, created by adding hot water to a shot of espresso, giving it a similar strength but different flavor from traditional drip coffee.",
         price = 2.50
+    ),
+    Drink(
+        name = "Water",
+        description = "For the strong.",
+        price = 420.0
     )
 )

@@ -6,7 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -59,10 +61,14 @@ fun AppContainer(modifier: Modifier = Modifier) {
         ) {
             LazyColumn(
                 modifier = Modifier.padding(horizontal = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+
             ) {
                 itemsIndexed(Drinks) { index, drink ->
                     DrinkCard(drink = drink, delay = index, loaded = loaded)
+                }
+                item {
+                    Spacer(modifier = Modifier.height(12.dp))
                 }
             }
         }

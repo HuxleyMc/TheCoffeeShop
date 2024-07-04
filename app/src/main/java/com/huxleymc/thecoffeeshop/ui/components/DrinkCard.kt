@@ -1,8 +1,9 @@
 package com.huxleymc.thecoffeeshop.ui.components
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -60,6 +61,10 @@ fun DrinkCard(
         mutableStateOf(false)
     }
 
+    var showExpand: Boolean? by remember {
+        mutableStateOf(null)
+    }
+
     var amount by remember {
         mutableIntStateOf(1)
     }
@@ -67,18 +72,24 @@ fun DrinkCard(
     val interactionSource = remember { MutableInteractionSource() }
 
     val loadedScale by animateFloatAsState(
-        if (loaded) 1f else 0.5f,
-        label = "",
-        animationSpec = tween(500 * delay)
+        if (loaded) 1f else 0.5f, label = "", animationSpec = spring(
+            dampingRatio = Spring.DampingRatioHighBouncy, stiffness = Spring.StiffnessLow
+        )
     )
 
     Card(
         modifier = modifier
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessMedium
+                )
+            )
             .clickable(
                 indication = null, interactionSource = interactionSource, onClick = onClick
             )
             .fillMaxWidth()
-            .animateContentSize()
+
     ) {
         Box(modifier = Modifier.padding(10.dp)) {
             Column {
@@ -105,40 +116,36 @@ fun DrinkCard(
                             style = Typography.bodyMedium.copy(letterSpacing = 0.sp),
                             maxLines = if (expanded) Int.MAX_VALUE else 2,
                             textAlign = TextAlign.End,
+                            onTextLayout = {
+                                if (it.didOverflowHeight && showExpand == null) {
+                                    showExpand = true
+                                }
+                            },
+                            modifier = Modifier.animateContentSize(
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioLowBouncy,
+                                    stiffness = Spring.StiffnessLow
+                                )
+                            )
                         )
                         Spacer(modifier = Modifier.height(2.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End
-                        ) {
+                        if (showExpand == true) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                IconButton(onClick = { expanded = !expanded }) {
+                                    Icon(
+                                        imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                                        contentDescription = null,
+                                        tint = Color.Blue,
+                                        modifier = Modifier.height(35.dp)
+                                    )
+                                }
 
-//                            Text(text = buildAnnotatedString {
-//                                append("S: ")
-//                                pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
-//                                append("$${drink.price}")
-//                                pop()
-//                                append(" | ")
-//                                append("M: ")
-//                                pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
-//                                append("$${drink.price + 1}")
-//                                pop()
-//                                append(" | ")
-//                                append("L: ")
-//                                pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
-//                                append("$${drink.price + 2}")
-//                            })
 
-                            IconButton(onClick = { expanded = !expanded }) {
-                                Icon(
-                                    imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                                    contentDescription = null,
-                                    tint = Color.Blue,
-                                    modifier = Modifier.height(35.dp)
-                                )
                             }
-
-
                         }
                     }
                 }
